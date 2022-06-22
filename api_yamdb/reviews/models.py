@@ -13,12 +13,12 @@ class Category(models.Model):
     )
     description = models.TextField()
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
+
+    def __str__(self):
+        return self.name
 
 
 class Genre(models.Model):
@@ -46,8 +46,4 @@ class Review(models.Model):
 
 
 class Comment(models.Model):
-    pass
-
-
-class Review(models.Model):
     pass
