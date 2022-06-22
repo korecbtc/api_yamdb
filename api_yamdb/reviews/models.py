@@ -6,12 +6,12 @@ User = get_user_model()
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=256)
+    name = models.CharField(max_length=256, verbose_name='Название')
     slug = models.SlugField(
         unique=True,
-        max_length=50
+        max_length=50,
+        verbose_name='URL'
     )
-    description = models.TextField()
 
     class Meta:
         verbose_name = 'Категория'
@@ -22,23 +22,23 @@ class Category(models.Model):
 
 
 class Genre(models.Model):
-    name = models.CharField(max_length=256)
+    name = models.CharField(max_length=256, verbose_name='Название')
     slug = models.SlugField(
         unique=True,
-        max_length=50
+        max_length=50,
+        verbose_name='URL'
     )
-    description = models.TextField()
+
+    class Meta:
+        verbose_name = 'Жанр'
+        verbose_name_plural = 'Жанры'
 
     def __str__(self):
         return self.name
 
 
 class Titles(models.Model):
-    name = models.CharField("Произведение", max_length=256)
-    # year =
-
-    def __str__(self):
-        return self.name
+    pass
 
 
 class Review(models.Model):
