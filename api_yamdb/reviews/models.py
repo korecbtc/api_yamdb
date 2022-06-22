@@ -1,4 +1,6 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth import get_user_model
 
 
@@ -45,7 +47,7 @@ class Review(models.Model):
     rating = models.IntegerField(validators=(MinValueValidator(1),
                                              MaxValueValidator(10)),
                                  verbose_name='Рейтинг')
-    author = models.ForeignKey(User,
+    author = models.ForeignKey('User',
                                on_delete=models.CASCADE,
                                related_name='reviews',
                                verbose_name='Автор')
@@ -71,7 +73,7 @@ class Comment(models.Model):
                                verbose_name='Обзор'
                                )
     text = models.TextField(verbose_name='Текст комментария')
-    author = models.ForeignKey(User,
+    author = models.ForeignKey('User',
                                on_delete=models.CASCADE,
                                related_name='comments',
                                verbose_name='Автор',
@@ -83,3 +85,7 @@ class Comment(models.Model):
         ordering = ['-pub_date']
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
+
+
+class User(AbstractUser):
+    pass
