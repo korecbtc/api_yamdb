@@ -1,8 +1,24 @@
+from django.forms import ValidationError
 from rest_framework import serializers
 from rest_framework.exceptions import ParseError
 from rest_framework.relations import SlugRelatedField
 from rest_framework.validators import UniqueTogetherValidator
-from reviews.models import Review, Comment, Category
+from reviews.models import Review, Comment, Category, User
+
+class SignupSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ('username', 'email')
+        model = User
+    
+    def validate_username(self, value):
+        if value == 'me':
+            raise ValidationError('Нельзя использовать это имя по')
+        return value
+
+
+class TokenSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    verification_code = serializers.CharField()
 
 
 class CategorySerializer(serializers.ModelSerializer):
