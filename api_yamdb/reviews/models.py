@@ -53,16 +53,18 @@ class Title(models.Model):
 
 
 class Review(models.Model):
-    text = models.TextField(verbose_name='Текст отзыва')
+    text = models.TextField(verbose_name='Текст отзыва', default='1')
     pub_date = models.DateTimeField(auto_now_add=True,
-                                    verbose_name='Дата публикации')
+                                    verbose_name='Дата публикации',
+                                    )
     rating = models.IntegerField(validators=(MinValueValidator(1),
                                              MaxValueValidator(10)),
                                  verbose_name='Рейтинг')
     author = models.ForeignKey(User,
                                on_delete=models.CASCADE,
                                related_name='reviews',
-                               verbose_name='Автор')
+                               verbose_name='Автор',
+                               )
     title = models.ForeignKey(Title,
                               on_delete=models.CASCADE,
                               related_name='reviews',
@@ -70,8 +72,10 @@ class Review(models.Model):
 
     class Meta:
         ordering = ['-pub_date']
-        constraints = models.UniqueConstraint(fields=('title', 'author'),
-                                              name='Unique_review_per_author')
+        constraints = [
+            models.UniqueConstraint(fields=('title', 'author'),
+                                    name='Unique_review_per_author')
+        ]
         verbose_name = 'Обзор'
         verbose_name_plural = 'Обзоры'
 
@@ -91,7 +95,8 @@ class Comment(models.Model):
                                verbose_name='Автор',
                                )
     pub_date = models.DateTimeField(auto_now_add=True,
-                                    verbose_name='Дата публикации комментария')
+                                    verbose_name='Дата публикации комментария',
+                                    )
 
     class Meta:
         ordering = ['-pub_date']
