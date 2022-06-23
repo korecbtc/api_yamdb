@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
 
+
 class User(AbstractUser):
     CHOICES = (('user', 'user'), ('moderator', 'moderator'), ('admin', 'admin'))
     bio = models.TextField(
@@ -15,6 +16,7 @@ class User(AbstractUser):
     
     def __str__(self):
         return self.name
+
 
 class Category(models.Model):
     name = models.CharField(max_length=256, verbose_name='Название')
@@ -70,8 +72,10 @@ class Review(models.Model):
 
     class Meta:
         ordering = ['-pub_date']
-        constraints = models.UniqueConstraint(fields=('title', 'author'),
-                                              name='Unique_review_per_author')
+        constraints = [
+            models.UniqueConstraint(fields=('title', 'author'),
+                                    name='Unique_review_per_author')
+        ]
         verbose_name = 'Обзор'
         verbose_name_plural = 'Обзоры'
 
