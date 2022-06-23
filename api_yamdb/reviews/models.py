@@ -1,9 +1,15 @@
 from django.db import models
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractUser
 
-
-User = get_user_model()
-
+class User(AbstractUser):
+    CHOICES = (('user', 'user'), ('moderator', 'moderator'), ('admin', 'admin'))
+    bio = models.TextField(
+        'Биография',
+        blank=True,
+    )
+    first_name = models.CharField(max_length=150, blank=True)
+    email = models.EmailField(max_length=254, blank=True)
+    role = models.CharField(max_length=150, choices=CHOICES, default='user')
 
 class Category(models.Model):
     name = models.CharField(max_length=256)
