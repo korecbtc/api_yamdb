@@ -10,6 +10,11 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=150, blank=True)
     email = models.EmailField(max_length=254, blank=True)
     role = models.CharField(max_length=150, choices=CHOICES, default='user')
+    verification_code = models.IntegerField(blank=True, default='1')
+    
+    def __str__(self):
+        return self.name
+
 
 class Category(models.Model):
     name = models.CharField(max_length=256)
