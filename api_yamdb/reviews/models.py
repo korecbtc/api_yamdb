@@ -69,7 +69,8 @@ class Review(models.Model):
         constraints = [
             models.UniqueConstraint(fields=('title', 'author'),
                                     name='Unique_review_per_author')
-        ]
+            ]
+
         verbose_name = 'Обзор'
         verbose_name_plural = 'Обзоры'
 
