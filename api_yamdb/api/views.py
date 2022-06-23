@@ -1,19 +1,20 @@
 from rest_framework import filters, viewsets, status
+from rest_framework import serializers
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.decorators import action, api_view
+from rest_framework_simplejwt.tokens import AccessToken
 
 from django.shortcuts import get_object_or_404
+from django.core.mail import send_mail
+from random import randint
 
 from reviews.models import Review, Comment, Category, User
-from reviews.models import Title
+from reviews.models import Title, Genre
 from .permissions import IsAuthorOrAdminOrModeratorOrReadOnly
 from .serializers import ReviewSerializer, CommentSerializer
 from .serializers import CategorySerializer, SignupSerializer, TokenSerializer
-from rest_framework import serializers
-from random import randint
-from django.core.mail import send_mail
-from rest_framework_simplejwt.tokens import AccessToken
+from .serializers import GenreSerializer
 
 
 class CategoriesViewSet(viewsets.ModelViewSet):
@@ -84,11 +85,11 @@ def signup(request):
         user.verification_code = randint(1, 1000000)
         user.save()
         send_mail(
-        subject="Проверочный код для Yamdb",
-        message=f"Ваш проверочный код: {user.verification_code}",
-        from_email=None,
-        recipient_list=[user.email],
-    )
+            subject="Проверочный код для Yamdb",
+            message=f"Ваш проверочный код: {user.verification_code}",
+            from_email=None,
+            recipient_list=[user.email],
+        )
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -105,8 +106,22 @@ def token(request):
     else: 
         raise serializers.ValidationError(
                 f'Вы ввели неверный код! {key} {user.verification_code}' 
-            ) 
-
-        
+            )
 
 
+class GenresViewSet(viewsets.ModelViewSet):
+    queryset = Genre.objects.all()
+    serializer_class = GenreSerializer
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
+
+    @action(
+        detail=False, methods=['delete'],
+        url_path=r'(?P<slug>\w+)',
+        lookup_field='slug', url_name='category_slug'
+    )
+    def get_genre(self, request, slug):
+        category = self.get_object()
+        serializer = CategorySerializer(category)
+        category.delete()
+        return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
