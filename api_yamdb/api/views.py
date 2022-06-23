@@ -1,19 +1,17 @@
-from rest_framework import filters, viewsets, status
+from random import randint
+
+from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404
+from rest_framework import filters, serializers, status, viewsets
+from rest_framework.decorators import action, api_view
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
-from rest_framework.decorators import action, api_view
-
-from django.shortcuts import get_object_or_404
-
-from reviews.models import Review, Comment, Category, User
-from reviews.models import Title
-from .permissions import IsAuthorOrAdminOrModeratorOrReadOnly
-from .serializers import ReviewSerializer, CommentSerializer
-from .serializers import CategorySerializer, SignupSerializer, TokenSerializer
-from rest_framework import serializers
-from random import randint
-from django.core.mail import send_mail
 from rest_framework_simplejwt.tokens import AccessToken
+from reviews.models import Category, Comment, Review, Title, User
+
+from .permissions import IsAuthorOrAdminOrModeratorOrReadOnly
+from .serializers import (CategorySerializer, CommentSerializer,
+                          ReviewSerializer, SignupSerializer, TokenSerializer)
 
 
 class CategoriesViewSet(viewsets.ModelViewSet):
