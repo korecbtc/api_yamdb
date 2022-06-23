@@ -3,8 +3,9 @@ from rest_framework import serializers
 from rest_framework.exceptions import ParseError
 from rest_framework.relations import SlugRelatedField
 from rest_framework.validators import UniqueTogetherValidator
-from reviews.models import Review, Comment, Category, User
 from reviews.models import Genre
+
+from reviews.models import Category, Comment, Review, User
 
 
 class SignupSerializer(serializers.ModelSerializer):
