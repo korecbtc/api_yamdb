@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
 
+
 class User(AbstractUser):
     CHOICES = (('user', 'user'), ('moderator', 'moderator'), ('admin', 'admin'))
     bio = models.TextField(
@@ -15,6 +16,7 @@ class User(AbstractUser):
     
     def __str__(self):
         return self.name
+
 
 class Category(models.Model):
     name = models.CharField(max_length=256, verbose_name='Название')
@@ -53,18 +55,16 @@ class Title(models.Model):
 
 
 class Review(models.Model):
-    text = models.TextField(verbose_name='Текст отзыва', default='1')
+    text = models.TextField(verbose_name='Текст отзыва')
     pub_date = models.DateTimeField(auto_now_add=True,
-                                    verbose_name='Дата публикации',
-                                    )
-    rating = models.IntegerField(validators=(MinValueValidator(1),
-                                             MaxValueValidator(10)),
-                                 verbose_name='Рейтинг')
+                                    verbose_name='Дата публикации')
+    score = models.IntegerField(validators=(MinValueValidator(1),
+                                            MaxValueValidator(10)),
+                                verbose_name='Рейтинг')
     author = models.ForeignKey(User,
                                on_delete=models.CASCADE,
                                related_name='reviews',
-                               verbose_name='Автор',
-                               )
+                               verbose_name='Автор')
     title = models.ForeignKey(Title,
                               on_delete=models.CASCADE,
                               related_name='reviews',
@@ -95,8 +95,7 @@ class Comment(models.Model):
                                verbose_name='Автор',
                                )
     pub_date = models.DateTimeField(auto_now_add=True,
-                                    verbose_name='Дата публикации комментария',
-                                    )
+                                    verbose_name='Дата публикации комментария')
 
     class Meta:
         ordering = ['-pub_date']
