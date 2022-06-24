@@ -41,6 +41,7 @@ class CategoriesViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     permission_classes = (IsAuthorOrAdminOrModeratorOrReadOnly,)
+    pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
         title = get_object_or_404(
@@ -60,6 +61,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = (IsAuthorOrAdminOrModeratorOrReadOnly,)
+    pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
         review = get_object_or_404(
@@ -107,7 +109,6 @@ def token(request):
         raise serializers.ValidationError(
                 f'Вы ввели неверный код!' 
             ) 
-
 
 
 class GenresViewSet(viewsets.ModelViewSet):
