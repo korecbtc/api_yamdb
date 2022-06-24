@@ -11,7 +11,7 @@ class User(AbstractUser):
         blank=True,
     )
     first_name = models.CharField(max_length=150, blank=True)
-    email = models.EmailField(max_length=254, blank=True)
+    email = models.EmailField(max_length=254, blank=True, unique=True)
     role = models.CharField(max_length=150, choices=CHOICES, default='user')
     verification_code = models.IntegerField(blank=True, default='1')
 
@@ -136,4 +136,3 @@ class GenreTitle(models.Model):
 
     def __str__(self):
         return f'{self.title} {self.genre}'
-
