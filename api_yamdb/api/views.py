@@ -104,7 +104,7 @@ def token(request):
         return Response({"token": str(token)}, status=status.HTTP_200_OK)
     else: 
         raise serializers.ValidationError(
-                f'Вы ввели неверный код! {key} {user.verification_code}' 
+                f'Вы ввели неверный код!' 
             ) 
 
         
