@@ -12,9 +12,12 @@ from random import randint
 from reviews.models import Review, Comment, Category, User
 from reviews.models import Title, Genre
 from .permissions import IsAuthorOrAdminOrModeratorOrReadOnly
-from .serializers import ReviewSerializer, CommentSerializer
+from .serializers import ReviewSerializer, CommentSerializer, UsersSerializer
 from .serializers import CategorySerializer, SignupSerializer, TokenSerializer
 from .serializers import GenreSerializer
+
+MIN_VALUE = 1000
+MAX_VALUE = 1000000
 
 
 class CategoriesViewSet(viewsets.ModelViewSet):
@@ -83,8 +86,10 @@ def signup(request):
     serializer = SignupSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
-        user = get_object_or_404(User, username=serializer.validated_data.get('username'))
-        user.verification_code = randint(1, 1000000)
+        user = get_object_or_404(
+            User, username=serializer.validated_data.get('username')
+        )
+        user.verification_code = randint(MIN_VALUE, MAX_VALUE)
         user.save()
         send_mail(
             subject="Проверочный код для Yamdb",
@@ -101,15 +106,20 @@ def token(request):
     serializer = TokenSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     key = serializer.validated_data.get('verification_code')
-    user = get_object_or_404(User, username=serializer.validated_data.get('username'))
+    user = get_object_or_404(
+        User, username=serializer.validated_data.get('username')
+    )
     if key == str(user.verification_code):
         token = AccessToken.for_user(user)
         return Response({"token": str(token)}, status=status.HTTP_200_OK)
-    else: 
-        raise serializers.ValidationError(
-                f'Вы ввели неверный код!' 
-            ) 
+    else:
+        raise serializers.ValidationError('Вы ввели неверный код!')
 
+
+class UsersViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UsersSerializer
+    lookup_field = 'username'
 
 class GenresViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
