@@ -16,6 +16,7 @@ class User(AbstractUser):
     verification_code = models.IntegerField(blank=True, default='1')
 
 
+
 class Category(models.Model):
     name = models.CharField(max_length=256, verbose_name='Название')
     slug = models.SlugField(
@@ -135,3 +136,4 @@ class GenreTitle(models.Model):
 
     def __str__(self):
         return f'{self.title} {self.genre}'
+
