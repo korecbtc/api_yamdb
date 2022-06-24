@@ -12,7 +12,7 @@ from random import randint
 from reviews.models import Review, Comment, Category, User
 from reviews.models import Title, Genre
 from .permissions import IsAuthorOrAdminOrModeratorOrReadOnly
-from .serializers import ReviewSerializer, CommentSerializer
+from .serializers import ReviewSerializer, CommentSerializer, UsersSerializer
 from .serializers import CategorySerializer, SignupSerializer, TokenSerializer
 from .serializers import GenreSerializer
 
@@ -108,6 +108,11 @@ def token(request):
                 f'Вы ввели неверный код!' 
             ) 
 
+
+class UsersViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UsersSerializer
+    lookup_field = 'username'
 
 
 class GenresViewSet(viewsets.ModelViewSet):

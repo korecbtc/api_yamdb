@@ -3,6 +3,7 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 
+RANDOM_DEFAULT_CODE = 23386121
 
 class User(AbstractUser):
     CHOICES = (('user', 'user'), ('moderator', 'moderator'), ('admin', 'admin'))
@@ -13,7 +14,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=150, blank=True)
     email = models.EmailField(max_length=254, blank=True, unique=True)
     role = models.CharField(max_length=150, choices=CHOICES, default='user')
-    verification_code = models.IntegerField(blank=True, default='1')
+    verification_code = models.IntegerField(blank=True, default=RANDOM_DEFAULT_CODE)
 
 
 
