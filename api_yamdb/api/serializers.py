@@ -1,7 +1,5 @@
 from django.forms import ValidationError
 from rest_framework import serializers
-from rest_framework.exceptions import ParseError
-from rest_framework.relations import SlugRelatedField
 from rest_framework.validators import UniqueTogetherValidator, UniqueValidator
 from reviews.models import Genre
 
@@ -12,7 +10,7 @@ class SignupSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('username', 'email')
         model = User
-    
+
     def validate_username(self, value):
         if value == 'me':
             raise ValidationError('Нельзя использовать это имя пользователя')
@@ -25,17 +23,21 @@ class TokenSerializer(serializers.Serializer):
 
 
 class UsersSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(required=True,
-            validators = [ 
-            UniqueValidator( 
-                queryset=User.objects.all(), 
-                message='Такой адрес уже существует в базе' 
-            ) 
+    email = serializers.EmailField(
+        required=True,
+        validators=[
+            UniqueValidator(
+                queryset=User.objects.all(),
+                message='Такой адрес уже существует в базе'
+            )
         ]
     )
+
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'bio', 'role')
+        fields = (
+            'username', 'email', 'first_name', 'last_name', 'bio', 'role'
+        )
 
 
 class CategorySerializer(serializers.ModelSerializer):
