@@ -1,5 +1,5 @@
 from rest_framework import filters, viewsets, status
-from rest_framework import serializers
+from rest_framework import serializers, permissions
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.decorators import action, api_view
@@ -11,10 +11,10 @@ from random import randint
 
 from reviews.models import Review, Comment, Category, User
 from reviews.models import Title, Genre
-from .permissions import IsAuthorOrAdminOrModeratorOrReadOnly
+from .permissions import IsAuthorOrAdminOrModeratorOrReadOnly, IsAdmin
 from .serializers import ReviewSerializer, CommentSerializer, UsersSerializer
 from .serializers import CategorySerializer, SignupSerializer, TokenSerializer
-from .serializers import GenreSerializer
+from .serializers import GenreSerializer, UserMeSerializer
 
 MIN_VALUE = 1000
 MAX_VALUE = 1000000
@@ -120,6 +120,28 @@ class UsersViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UsersSerializer
     lookup_field = 'username'
+    permission_classes = (IsAdmin,)
+
+    @action(
+        detail=False,
+        methods=['GET', 'PATCH'],
+        url_path='me',
+        permission_classes=[permissions.IsAuthenticated],
+        serializer_class=UserMeSerializer
+    )
+    def get_patch_me(self, request):
+        if request.method == 'GET':
+            serializer = self.get_serializer(request.user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        if request.method == 'PATCH':
+            serializer = self.get_serializer(
+                request.user,
+                request.data
+            )
+            serializer.is_valid()
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class GenresViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
