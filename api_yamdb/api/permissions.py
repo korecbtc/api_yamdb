@@ -24,4 +24,4 @@ class IsModerator(permissions.BasePermission):
                 request.user.role == 'moderator') or (
                 request.user.is_superuser
             ) or request.user.role == 'admin'
-        )
+

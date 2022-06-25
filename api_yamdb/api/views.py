@@ -1,5 +1,5 @@
 from rest_framework import filters, viewsets, status
-from rest_framework import serializers
+from rest_framework import serializers, permissions
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.decorators import action, api_view
@@ -11,11 +11,15 @@ from random import randint
 
 from reviews.models import Review, Comment, Category, User
 from reviews.models import Title, Genre
-from .permissions import IsAuthorOrAdminOrModeratorOrReadOnly
-from .serializers import ReviewSerializer, CommentSerializer
+from .permissions import IsAuthorOrAdminOrModeratorOrReadOnly, IsAdmin
+from .serializers import ReviewSerializer, CommentSerializer, UsersSerializer
 from .serializers import CategorySerializer, SignupSerializer, TokenSerializer
 from .serializers import GenreSerializer, TitleSerializer, TitleCreateSerializer
 from .filters import TitlesFilters
+from .serializers import UserMeSerializer
+
+MIN_VALUE = 1000
+MAX_VALUE = 1000000
 
 
 class CategoriesViewSet(viewsets.ModelViewSet):
@@ -42,6 +46,7 @@ class CategoriesViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     permission_classes = (IsAuthorOrAdminOrModeratorOrReadOnly,)
+    pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
         title = get_object_or_404(
@@ -61,6 +66,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = (IsAuthorOrAdminOrModeratorOrReadOnly,)
+    pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
         review = get_object_or_404(
@@ -82,8 +88,10 @@ def signup(request):
     serializer = SignupSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
-        user = get_object_or_404(User, username=serializer.validated_data.get('username'))
-        user.verification_code = randint(1, 1000000)
+        user = get_object_or_404(
+            User, username=serializer.validated_data.get('username')
+        )
+        user.verification_code = randint(MIN_VALUE, MAX_VALUE)
         user.save()
         send_mail(
             subject="Проверочный код для Yamdb",
@@ -100,15 +108,42 @@ def token(request):
     serializer = TokenSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     key = serializer.validated_data.get('verification_code')
-    user = get_object_or_404(User, username=serializer.validated_data.get('username'))
+    user = get_object_or_404(
+        User, username=serializer.validated_data.get('username')
+    )
     if key == str(user.verification_code):
         token = AccessToken.for_user(user)
         return Response({"token": str(token)}, status=status.HTTP_200_OK)
-    else: 
-        raise serializers.ValidationError(
-                f'Вы ввели неверный код! {key} {user.verification_code}' 
-            )
+    else:
+        raise serializers.ValidationError('Вы ввели неверный код!')
 
+
+class UsersViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UsersSerializer
+    lookup_field = 'username'
+    permission_classes = (IsAdmin,)
+
+    @action(
+        detail=False,
+        methods=['GET', 'PATCH'],
+        url_path='me',
+        permission_classes=[permissions.IsAuthenticated],
+        serializer_class=UserMeSerializer
+    )
+    def get_patch_me(self, request):
+        if request.method == 'GET':
+            serializer = self.get_serializer(request.user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        if request.method == 'PATCH':
+            serializer = self.get_serializer(
+                request.user,
+                request.data
+            )
+            serializer.is_valid()
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class GenresViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()

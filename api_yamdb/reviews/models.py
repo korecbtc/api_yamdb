@@ -3,17 +3,23 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 
+RANDOM_DEFAULT_CODE = 23386121
+
 
 class User(AbstractUser):
-    CHOICES = (('user', 'user'), ('moderator', 'moderator'), ('admin', 'admin'))
+    CHOICES = (
+        ('user', 'user'), ('moderator', 'moderator'), ('admin', 'admin')
+    )
     bio = models.TextField(
         'Биография',
         blank=True,
     )
     first_name = models.CharField(max_length=150, blank=True)
-    email = models.EmailField(max_length=254, blank=True)
+    email = models.EmailField(max_length=254, blank=True, unique=True)
     role = models.CharField(max_length=150, choices=CHOICES, default='user')
-    verification_code = models.IntegerField(blank=True, default='1')
+    verification_code = models.IntegerField(
+        blank=True, default=RANDOM_DEFAULT_CODE
+    )
 
 
 class Category(models.Model):
@@ -69,7 +75,7 @@ class Review(models.Model):
         constraints = [
             models.UniqueConstraint(fields=('title', 'author'),
                                     name='Unique_review_per_author')
-            ]
+        ]
 
         verbose_name = 'Обзор'
         verbose_name_plural = 'Обзоры'
