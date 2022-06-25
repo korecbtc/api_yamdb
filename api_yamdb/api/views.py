@@ -14,7 +14,9 @@ from reviews.models import Title, Genre
 from .permissions import IsAuthorOrAdminOrModeratorOrReadOnly, IsAdmin
 from .serializers import ReviewSerializer, CommentSerializer, UsersSerializer
 from .serializers import CategorySerializer, SignupSerializer, TokenSerializer
-from .serializers import GenreSerializer, UserMeSerializer
+from .serializers import GenreSerializer, TitleSerializer, TitleCreateSerializer
+from .filters import TitlesFilters
+from .serializers import UserMeSerializer
 
 MIN_VALUE = 1000
 MAX_VALUE = 1000000
@@ -159,3 +161,14 @@ class GenresViewSet(viewsets.ModelViewSet):
         serializer = GenreSerializer(genre)
         genre.delete()
         return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+
+
+class TitleViewSet(viewsets.ModelViewSet):
+    queryset = Title.objects.all()
+    serializer_class = TitleSerializer
+    filterset_class = TitlesFilters
+
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PATCH',):
+            return TitleCreateSerializer
+        return TitleSerializer
