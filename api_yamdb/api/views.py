@@ -91,11 +91,11 @@ def signup(request):
         user = get_object_or_404(
             User, username=serializer.validated_data.get('username')
         )
-        user.verification_code = randint(MIN_VALUE, MAX_VALUE)
+        user.confirmation_code = randint(MIN_VALUE, MAX_VALUE)
         user.save()
         send_mail(
             subject="Проверочный код для Yamdb",
-            message=f"Ваш проверочный код: {user.verification_code}",
+            message=f"Ваш проверочный код: {user.confirmation_code}",
             from_email=None,
             recipient_list=[user.email],
         )
@@ -107,11 +107,11 @@ def signup(request):
 def token(request):
     serializer = TokenSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    key = serializer.validated_data.get('verification_code')
+    key = serializer.validated_data.get('confirmation_code')
     user = get_object_or_404(
         User, username=serializer.validated_data.get('username')
     )
-    if key == str(user.verification_code):
+    if key == str(user.confirmation_code):
         token = AccessToken.for_user(user)
         return Response({"token": str(token)}, status=status.HTTP_200_OK)
     else:

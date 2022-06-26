@@ -9,6 +9,24 @@ from django.db.models import Avg
 
 
 class SignupSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(
+        required=True,
+        validators=[
+            UniqueValidator(
+                queryset=User.objects.all(),
+                message='Такой username уже существует в базе'
+            )
+        ])
+    email = serializers.EmailField(
+        required=True,
+        validators=[
+            UniqueValidator(
+                queryset=User.objects.all(),
+                message='Такой адрес уже существует в базе'
+            )
+        ]
+    )
+
     class Meta:
         fields = ('username', 'email')
         model = User
@@ -21,7 +39,7 @@ class SignupSerializer(serializers.ModelSerializer):
 
 class TokenSerializer(serializers.Serializer):
     username = serializers.CharField()
-    verification_code = serializers.CharField()
+    confirmation_code = serializers.CharField()
 
 
 class UsersSerializer(serializers.ModelSerializer):
