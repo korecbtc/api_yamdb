@@ -17,6 +17,7 @@ from .serializers import CategorySerializer, SignupSerializer, TokenSerializer
 from .serializers import GenreSerializer, TitleSerializer
 from .filters import TitlesFilters
 from .serializers import UserMeSerializer, TitleCreateSerializer
+from django_filters import rest_framework as django_filters
 
 MIN_VALUE = 1000
 MAX_VALUE = 1000000
@@ -170,10 +171,11 @@ class GenresViewSet(viewsets.ModelViewSet):
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
-    filterset_class = TitlesFilters
     permission_classes = (IsAdmin | IsReadOnly,)
+    filter_backends = (django_filters.DjangoFilterBackend,)
+    filterset_class = TitlesFilters
 
     def get_serializer_class(self):
-        if self.request.method in ('POST', 'PATCH',):
+        if self.action in ('create', 'partial_update'):
             return TitleCreateSerializer
         return TitleSerializer
