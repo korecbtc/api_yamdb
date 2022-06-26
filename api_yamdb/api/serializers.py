@@ -34,6 +34,12 @@ class UsersSerializer(serializers.ModelSerializer):
             )
         ]
     )
+    username = serializers.CharField(
+        validators=[
+            UniqueValidator(queryset=User.objects.all())
+        ],
+        required=True,
+    )
 
     class Meta:
         model = User
