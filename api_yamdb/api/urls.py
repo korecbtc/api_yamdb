@@ -4,14 +4,14 @@ from rest_framework import routers
 from .views import GenresViewSet, UsersViewSet
 
 from . import views
-from .views import CategoriesViewSet, CommentViewSet, ReviewViewSet
+from .views import CategoriesViewSet, CommentViewSet, ReviewViewSet, TitleViewSet
 
 app_name = 'api'
 router = routers.DefaultRouter()
 router.register('categories', CategoriesViewSet)
 router.register('genres', GenresViewSet)
 router.register('users', UsersViewSet)
-# router.register('titles', TitlesViewSet)
+router.register('titles', TitleViewSet)
 router.register(
     r'titles/(?P<title_id>\d+)/reviews',
     ReviewViewSet,

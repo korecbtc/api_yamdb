@@ -11,7 +11,7 @@ from random import randint
 
 from reviews.models import Review, Comment, Category, User
 from reviews.models import Title, Genre
-from .permissions import IsAuthorOrAdminOrModeratorOrReadOnly, IsAdmin
+from .permissions import IsAuthorOrAdminOrModeratorOrReadOnly, IsAdmin, IsReadOnly
 from .serializers import ReviewSerializer, CommentSerializer, UsersSerializer
 from .serializers import CategorySerializer, SignupSerializer, TokenSerializer
 from .serializers import GenreSerializer, TitleSerializer
@@ -28,6 +28,7 @@ class CategoriesViewSet(viewsets.ModelViewSet):
     pagination_class = LimitOffsetPagination
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+    permission_classes = (IsAdmin | IsReadOnly,)
 
     @action(
         detail=False,
@@ -152,6 +153,7 @@ class GenresViewSet(viewsets.ModelViewSet):
     pagination_class = LimitOffsetPagination
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+    permission_classes = (IsAdmin | IsReadOnly,)
 
     @action(
         detail=False, methods=['delete'],
@@ -169,6 +171,7 @@ class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
     filterset_class = TitlesFilters
+    permission_classes = (IsAdmin | IsReadOnly,)
 
     def get_serializer_class(self):
         if self.request.method in ('POST', 'PATCH',):
