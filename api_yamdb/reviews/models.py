@@ -20,6 +20,11 @@ class User(AbstractUser):
     verification_code = models.IntegerField(
         blank=True, default=RANDOM_DEFAULT_CODE
     )
+    username = models.CharField(
+        max_length=150,
+        null=True,
+        unique=True
+    )
 
 
 class Category(models.Model):

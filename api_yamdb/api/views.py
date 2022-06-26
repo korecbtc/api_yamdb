@@ -14,9 +14,9 @@ from reviews.models import Title, Genre
 from .permissions import IsAuthorOrAdminOrModeratorOrReadOnly, IsAdmin
 from .serializers import ReviewSerializer, CommentSerializer, UsersSerializer
 from .serializers import CategorySerializer, SignupSerializer, TokenSerializer
-from .serializers import GenreSerializer, TitleSerializer, TitleCreateSerializer
+from .serializers import GenreSerializer, TitleSerializer
 from .filters import TitlesFilters
-from .serializers import UserMeSerializer
+from .serializers import UserMeSerializer, TitleCreateSerializer
 
 MIN_VALUE = 1000
 MAX_VALUE = 1000000
@@ -140,10 +140,11 @@ class UsersViewSet(viewsets.ModelViewSet):
                 request.user,
                 request.data
             )
-            serializer.is_valid()
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class GenresViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
