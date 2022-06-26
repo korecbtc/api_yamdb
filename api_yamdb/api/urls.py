@@ -4,7 +4,8 @@ from rest_framework import routers
 from .views import GenresViewSet, UsersViewSet
 
 from . import views
-from .views import CategoriesViewSet, CommentViewSet, ReviewViewSet, TitleViewSet
+from .views import (CategoriesViewSet, CommentViewSet,
+                    ReviewViewSet, TitleViewSet)
 
 app_name = 'api'
 router = routers.DefaultRouter()
