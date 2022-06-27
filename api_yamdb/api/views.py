@@ -11,7 +11,8 @@ from random import randint
 
 from reviews.models import Review, Comment, Category, User
 from reviews.models import Title, Genre
-from .permissions import IsAuthorOrAdminOrModeratorOrReadOnly, IsAdmin, IsReadOnly
+from .permissions import (IsOwnerOrReadOnly,
+                          IsAdmin, IsReadOnly)
 from .serializers import ReviewSerializer, CommentSerializer, UsersSerializer
 from .serializers import CategorySerializer, SignupSerializer, TokenSerializer
 from .serializers import GenreSerializer, TitleSerializer
@@ -47,7 +48,7 @@ class CategoriesViewSet(viewsets.ModelViewSet):
 
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
-    permission_classes = (IsAuthorOrAdminOrModeratorOrReadOnly,)
+    permission_classes = (IsOwnerOrReadOnly,)
     pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
@@ -67,7 +68,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = (IsAuthorOrAdminOrModeratorOrReadOnly,)
+    permission_classes = (IsOwnerOrReadOnly,)
     pagination_class = LimitOffsetPagination
 
     def get_queryset(self):

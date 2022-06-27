@@ -58,7 +58,7 @@ python manage.py runserver
 ***
 
 # Регистрация
-/api/v1/auth/signup/ - отправить uername и email,
+/api/v1/auth/signup/ - отправить username и email,
 проверить почту, скопировать проверочный код и отправить его на эндпоинт /api/v1/auth/token/
 # Примеры
 /api/v1/users/me/ - Получить данные своей учетной записи

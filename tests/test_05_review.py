@@ -206,7 +206,7 @@ class Test05ReviewAPI:
         )
         assert response.status_code == 200, (
             'Проверьте, что при GET запросе `/api/v1/titles/{title_id}/reviews/{review_id}/` '
-            'без токена авторизации возвращается статус 200'
+            'без токена авторизации возвращается статус 200 '
         )
         data = response.json()
         assert type(data.get('id')) == int, (
