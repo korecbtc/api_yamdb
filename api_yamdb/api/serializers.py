@@ -1,11 +1,9 @@
+from django.db.models import Avg
 from django.forms import ValidationError
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator, UniqueValidator
-from reviews.models import Genre
-
-from reviews.models import Category, Comment, Review, User, Title
-from django.utils import timezone
-from django.db.models import Avg
+from reviews.models import Category, Comment, Genre, Review, Title, User
 
 
 class SignupSerializer(serializers.ModelSerializer):

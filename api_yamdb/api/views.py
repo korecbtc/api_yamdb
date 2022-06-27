@@ -1,24 +1,21 @@
-from rest_framework import filters, viewsets, status
-from rest_framework import serializers, permissions
-from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.response import Response
-from rest_framework.decorators import action, api_view
-from rest_framework_simplejwt.tokens import AccessToken
-
-from django.shortcuts import get_object_or_404
-from django.core.mail import send_mail
 from random import randint
 
-from reviews.models import Review, Comment, Category, User
-from reviews.models import Title, Genre
-from .permissions import (IsOwnerOrReadOnly,
-                          IsAdmin, IsReadOnly)
-from .serializers import ReviewSerializer, CommentSerializer, UsersSerializer
-from .serializers import CategorySerializer, SignupSerializer, TokenSerializer
-from .serializers import GenreSerializer, TitleSerializer
-from .filters import TitlesFilters
-from .serializers import UserMeSerializer, TitleCreateSerializer
+from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as django_filters
+from rest_framework import filters, permissions, serializers, status, viewsets
+from rest_framework.decorators import action, api_view
+from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import AccessToken
+from reviews.models import Category, Genre, Review, Title, User
+
+from .filters import TitlesFilters
+from .permissions import IsAdmin, IsOwnerOrReadOnly, IsReadOnly
+from .serializers import (CategorySerializer, CommentSerializer,
+                          GenreSerializer, ReviewSerializer, SignupSerializer,
+                          TitleCreateSerializer, TitleSerializer,
+                          TokenSerializer, UserMeSerializer, UsersSerializer)
 
 MIN_VALUE = 1000
 MAX_VALUE = 1000000
@@ -97,8 +94,8 @@ def signup(request):
         user.confirmation_code = randint(MIN_VALUE, MAX_VALUE)
         user.save()
         send_mail(
-            subject="Проверочный код для Yamdb",
-            message=f"Ваш проверочный код: {user.confirmation_code}",
+            subject='Проверочный код для Yamdb',
+            message=f'Ваш проверочный код: {user.confirmation_code}',
             from_email=None,
             recipient_list=[user.email],
         )

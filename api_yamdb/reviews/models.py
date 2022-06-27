@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 
 RANDOM_DEFAULT_CODE = 23386121
@@ -11,11 +11,18 @@ class User(AbstractUser):
         ('user', 'user'), ('moderator', 'moderator'), ('admin', 'admin')
     )
     bio = models.TextField(
-        'Биография',
+        verbose_name='Биография',
         blank=True,
     )
-    first_name = models.CharField(max_length=150, blank=True)
-    email = models.EmailField(max_length=254, blank=True, unique=True)
+    first_name = models.CharField(
+        max_length=150, blank=True, verbose_name='Имя'
+    )
+    email = models.EmailField(
+        max_length=254,
+        blank=True,
+        unique=True,
+        verbose_name='Адрес электронной почты',
+    )
     role = models.CharField(max_length=150, choices=CHOICES, default='user')
     confirmation_code = models.IntegerField(
         blank=True, default=RANDOM_DEFAULT_CODE
@@ -23,7 +30,8 @@ class User(AbstractUser):
     username = models.CharField(
         max_length=150,
         null=True,
-        unique=True
+        unique=True,
+        verbose_name='Имя пользователя'
     )
 
 
