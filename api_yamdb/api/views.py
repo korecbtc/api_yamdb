@@ -3,6 +3,7 @@ from random import randint
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as django_filters
+from rest_framework import mixins
 from rest_framework import filters, permissions, serializers, status, viewsets
 from rest_framework.decorators import action, api_view
 from rest_framework.pagination import LimitOffsetPagination
@@ -21,7 +22,14 @@ MIN_VALUE = 1000
 MAX_VALUE = 1000000
 
 
-class CategoriesViewSet(viewsets.ModelViewSet):
+class CreateListDestroyViewSet(mixins.CreateModelMixin,
+                               mixins.ListModelMixin,
+                               mixins.DestroyModelMixin,
+                               viewsets.GenericViewSet):
+    pass
+
+
+class CategoriesViewSet(CreateListDestroyViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = LimitOffsetPagination
@@ -123,6 +131,7 @@ class UsersViewSet(viewsets.ModelViewSet):
     serializer_class = UsersSerializer
     lookup_field = 'username'
     permission_classes = (IsAdmin,)
+    pagination_class = LimitOffsetPagination
 
     @action(
         detail=False,
@@ -146,7 +155,7 @@ class UsersViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GenresViewSet(viewsets.ModelViewSet):
+class GenresViewSet(CreateListDestroyViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     pagination_class = LimitOffsetPagination
@@ -172,6 +181,7 @@ class TitleViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAdmin | IsReadOnly,)
     filter_backends = (django_filters.DjangoFilterBackend,)
     filterset_class = TitlesFilters
+    pagination_class = LimitOffsetPagination
 
     def get_serializer_class(self):
         if self.action in ('create', 'partial_update'):
