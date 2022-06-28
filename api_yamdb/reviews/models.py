@@ -34,6 +34,14 @@ class User(AbstractUser):
         verbose_name='Имя пользователя'
     )
 
+    @property
+    def is_admin(self):
+        return self.role == 'admin'
+
+    @property
+    def is_moderator(self):
+        return self.role == 'moderator'
+
 
 class Category(models.Model):
     name = models.CharField(max_length=256, verbose_name='Название')
@@ -149,8 +157,8 @@ class Title(models.Model):
 
 
 class GenreTitle(models.Model):
-    title = models.ForeignKey(Title, on_delete=models.CASCADE)
-    genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
+    title = models.ForeignKey(Title, on_delete=models.SET_NULL)
+    genre = models.ForeignKey(Genre, on_delete=models.SET_NULL)
 
     def __str__(self):
         return f'{self.title} {self.genre}'
