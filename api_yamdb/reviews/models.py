@@ -78,10 +78,12 @@ class Genre(models.Model):
 class Review(models.Model):
     text = models.TextField(verbose_name='Текст отзыва')
     pub_date = models.DateTimeField(auto_now_add=True,
-                                    verbose_name='Дата публикации')
-    score = models.IntegerField(validators=(MinValueValidator(1),
-                                            MaxValueValidator(10)),
-                                verbose_name='Рейтинг')
+                                    verbose_name='Дата публикации',
+                                    db_index=True)
+    score = models.PositiveSmallIntegerField(
+        validators=(MinValueValidator(0), MaxValueValidator(10)),
+        verbose_name='Рейтинг'
+    )
     author = models.ForeignKey('User',
                                on_delete=models.CASCADE,
                                related_name='reviews',
@@ -117,7 +119,8 @@ class Comment(models.Model):
                                verbose_name='Автор',
                                )
     pub_date = models.DateTimeField(auto_now_add=True,
-                                    verbose_name='Дата публикации комментария')
+                                    verbose_name='Дата публикации комментария',
+                                    db_index=True)
 
     class Meta:
         ordering = ['-pub_date']
