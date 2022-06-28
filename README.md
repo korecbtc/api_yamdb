@@ -68,7 +68,9 @@ python manage.py runserver
 django api rest framework
 # Авторы
 Станислав Хныкин
-***
+```
+
 Георгий Муромцев
-***
+```
+
 Корец Иван
