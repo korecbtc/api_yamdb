@@ -64,3 +64,11 @@ python manage.py runserver
 /api/v1/users/me/ - Получить данные своей учетной записи
 /api/v1/categories/ - Получить список всех категорий
 /api/v1/genres/ - Получить список всех жанров.
+# Технологии
+django api rest framework
+# Авторы
+Станислав Хныкин  
+
+Георгий Муромцев  
+
+Корец Иван

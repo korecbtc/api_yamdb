@@ -34,6 +34,14 @@ class User(AbstractUser):
         verbose_name='Имя пользователя'
     )
 
+    @property
+    def is_admin(self):
+        return self.role == 'admin'
+
+    @property
+    def is_moderator(self):
+        return self.role == 'moderator'
+
 
 class Category(models.Model):
     name = models.CharField(max_length=256, verbose_name='Название')
@@ -70,10 +78,12 @@ class Genre(models.Model):
 class Review(models.Model):
     text = models.TextField(verbose_name='Текст отзыва')
     pub_date = models.DateTimeField(auto_now_add=True,
-                                    verbose_name='Дата публикации')
-    score = models.IntegerField(validators=(MinValueValidator(1),
-                                            MaxValueValidator(10)),
-                                verbose_name='Рейтинг')
+                                    verbose_name='Дата публикации',
+                                    db_index=True)
+    score = models.PositiveSmallIntegerField(
+        validators=(MinValueValidator(0), MaxValueValidator(10)),
+        verbose_name='Рейтинг'
+    )
     author = models.ForeignKey('User',
                                on_delete=models.CASCADE,
                                related_name='reviews',
@@ -109,7 +119,8 @@ class Comment(models.Model):
                                verbose_name='Автор',
                                )
     pub_date = models.DateTimeField(auto_now_add=True,
-                                    verbose_name='Дата публикации комментария')
+                                    verbose_name='Дата публикации комментария',
+                                    db_index=True)
 
     class Meta:
         ordering = ['-pub_date']
@@ -149,8 +160,8 @@ class Title(models.Model):
 
 
 class GenreTitle(models.Model):
-    title = models.ForeignKey(Title, on_delete=models.CASCADE)
-    genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
+    title = models.ForeignKey(Title, on_delete=models.SET_NULL, null=True)
+    genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return f'{self.title} {self.genre}'
