@@ -57,6 +57,7 @@ python manage.py runserver
 /api/v1/genres/ - Получить список всех жанров.
 
 Полный список запросов API можно посмотреть в документации
+http://127.0.0.1:8000/redoc/
 # Технологии
 - проект написан на Python с использованием Django REST Framework
 - библиотека Simple JWT - работа с JWT-токеном
