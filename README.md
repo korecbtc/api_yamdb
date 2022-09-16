@@ -29,7 +29,7 @@ python -m venv venv
 source venv/Scripts/activate
 ```
 
- - Зайдите в папку api_yamdb и установите зависимости из файла requirements.txt
+ - Зайдите в папку с проектом и установите зависимости из файла requirements.txt
 
 ``` 
 pip install -r requirements.txt
