@@ -56,8 +56,6 @@ python manage.py runserver
 
 /api/v1/genres/ - Получить список всех жанров.
 
-/api/v1/categories/ - Добавить новую категорию.
-
 Полный список запросов API можно посмотреть в документации
 # Технологии
 - проект написан на Python с использованием Django REST Framework
