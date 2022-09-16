@@ -150,4 +150,3 @@ media/
 
 # письма и миграции
 sent_emails/
-migrations/
